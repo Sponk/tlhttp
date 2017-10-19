@@ -1,0 +1,7 @@
+build
+cmake-build-debug
+*.kdev4
+
+fuzz/fuzz
+fuzz/crash*
+*~
