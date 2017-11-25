@@ -121,6 +121,38 @@ std::string Connection::receive()
 	return ss.str();
 }
 
+Request Connection::get()
+{
+	if(!m_socketFd)
+		throw std::runtime_error("Not connected!");
+
+	char buffer[512];
+	buffer[511] = 0;
+
+	int err = 0;
+	Request req;
+
+	// Get header
+	if((err = ::recv(m_socketFd, buffer, sizeof(buffer) - 1, 0)) <= 0)
+		throw std::runtime_error("Could not fetch HTTP header!");
+
+	req = Request::parse(std::string(buffer, err));
+
+	// Calculate remaining size
+	size_t bytecount = std::stoll(req["Content-Length"]) - req.getBody().str().size();
+	while((err = ::recv(m_socketFd, buffer, sizeof(buffer) - 1, 0)) > 0 && bytecount > 0)
+	{
+		bytecount -= err;
+		buffer[err] = 0;
+		req << buffer;
+	}
+
+	if(err != 0)
+		throw std::runtime_error("Error while receiving data!");
+
+	return req;
+}
+
 Request Connection::get(const std::string& url, const std::string& str)
 {
 	Request req(m_address, url, false);

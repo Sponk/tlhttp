@@ -66,7 +66,9 @@ public:
 	 * @throws std::runtime_error on failure.
 	 */
 	virtual std::string receive();
-	
+
+	virtual Request get();
+
 	/**
 	 * @brief Sends a POST/GET request over the connection.
 	 * @param url The parameter.

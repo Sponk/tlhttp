@@ -55,32 +55,33 @@ std::string Request::toString() const
 Request Request::parse(const std::string& str)
 {
 	Request ret;
-	
+
 	size_t headerEnd = str.find("\r\n\r\n");
-	if(headerEnd == std::string::npos)
+	if(headerEnd == std::string::npos || headerEnd + 4 >= str.size())
 		throw std::runtime_error("Given string has no valid HTTP Header!");
-	
+
 	ret.getBody() << str.substr(headerEnd + 4);
-	
+
 	std::string header = str;
 	header.erase(headerEnd);
 	header.erase(std::remove(header.begin(), header.end(), '\r'), header.end());
 
 	std::stringstream ss(header);
 	std::string key, value, version;
-	
+
 	std::getline(ss, version, '\n');
-	
+	ret.m_url = version.substr(version.find(" "), version.find_last_of(" "));
+
 	while(ss)
 	{
 		std::getline(ss, key, ':');
 		std::getline(ss, value, '\n');
-		
+
 		if(value[0] == ' ')
 			value = value.substr(1);
-		
+
 		ret.m_headers[key] = value;
 	}
-	
+
 	return ret;
 }

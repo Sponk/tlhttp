@@ -64,7 +64,13 @@ public:
 	 * @return The write enabled request body stream
 	 */
 	std::stringstream& getBody() { return m_body; }
-	
+
+	/**
+	 * @brief Returns the request URL without the host.
+	 * @return The URL.
+	 */
+	std::string getUrl() { return m_url; }
+
 	/**
 	 * @brief Parses an HTTP request and builds an object out of it.
 	 * @throws std::runtime_error when the header can not be parsed.

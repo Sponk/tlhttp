@@ -96,7 +96,7 @@ TEST(Header, SimpleSerialize)
 
 TEST(Header, Corrupt0)
 {
-	auto req = tlhttp::Request::parse(testCorrupt0);
+	EXPECT_ANY_THROW(tlhttp::Request::parse(testCorrupt0));
 }
 
 TEST(Header, Corrupt1)
@@ -106,5 +106,5 @@ TEST(Header, Corrupt1)
 
 TEST(Header, Corrupt2)
 {
-	auto req = tlhttp::Request::parse(testCorrupt2);
+	EXPECT_ANY_THROW(tlhttp::Request::parse(testCorrupt2));
 }
