@@ -1,5 +1,5 @@
 // TinyLittleHTTP
-// Copyright (c) 2017 Yannick Pflanzer, All rights reserved.
+// Copyright (c) 2017-2018 Yannick Pflanzer, All rights reserved.
 // 
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -30,7 +30,12 @@ Request::Request(const std::string& host, const std::string& url, bool isPost)
 std::string Request::toString() const
 {
 	std::stringstream ss;
-	ss << (m_isPostRequest ? "POST " : "GET ") << m_url << " HTTP/1.1" << "\r\n";
+	
+	if(m_response == 0)
+		ss << (m_isPostRequest ? "POST " : "GET ") << m_url << " HTTP/1.1" << "\r\n";
+	else
+		ss << "HTTP/1.1 " << m_response << "OK\r\n";
+	
 	for (auto k : m_headers)
 	{
 		ss << k.first << ": " << k.second << "\r\n";
@@ -57,8 +62,8 @@ Request Request::parse(const std::string& str)
 	Request ret;
 
 	size_t headerEnd = str.find("\r\n\r\n");
-	if(headerEnd == std::string::npos || headerEnd + 4 >= str.size())
-		throw std::runtime_error("Given string has no valid HTTP Header!");
+	if(headerEnd == std::string::npos)
+		throw std::runtime_error("Given string has no valid HTTP header!");
 
 	ret.getBody() << str.substr(headerEnd + 4);
 
@@ -70,8 +75,16 @@ Request Request::parse(const std::string& str)
 	std::string key, value, version;
 
 	std::getline(ss, version, '\n');
-	ret.m_url = version.substr(version.find(" "), version.find_last_of(" "));
-
+	
+	{
+		size_t urlstart = version.find(" ");
+		size_t urlend = version.find(" ", urlstart + 1);
+		if(urlstart == std::string::npos || urlend == std::string::npos)
+			throw std::runtime_error("Invalid HTTP header: URL is invalid!");
+		
+		++urlstart;
+		ret.m_url = version.substr(urlstart, urlend - urlstart);
+	}
 	while(ss)
 	{
 		std::getline(ss, key, ':');

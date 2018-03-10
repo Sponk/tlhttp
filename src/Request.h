@@ -1,5 +1,5 @@
 // TinyLittleHTTP
-// Copyright (c) 2017 Yannick Pflanzer, All rights reserved.
+// Copyright (c) 2017-2018 Yannick Pflanzer, All rights reserved.
 // 
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -34,6 +34,8 @@ class Request
 	std::string m_url;
 	std::string m_host;
 	bool m_isPostRequest;
+	
+	uint16_t m_response;
 public:
 
 	Request() {}
@@ -71,6 +73,8 @@ public:
 	 */
 	std::string getUrl() { return m_url; }
 
+	void setResponse(uint16_t v) { m_response = v; }
+	
 	/**
 	 * @brief Parses an HTTP request and builds an object out of it.
 	 * @throws std::runtime_error when the header can not be parsed.

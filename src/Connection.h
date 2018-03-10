@@ -1,5 +1,5 @@
 // TinyLittleHTTP
-// Copyright (c) 2017 Yannick Pflanzer, All rights reserved.
+// Copyright (c) 2017-2018 Yannick Pflanzer, All rights reserved.
 // 
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -21,6 +21,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <openssl/ssl.h>
+
 #include "Request.h"
 
 namespace tlhttp
@@ -93,8 +95,6 @@ public:
 		return m_socketFd;
 	}
 };
-
-#include <openssl/ssl.h>
 
 /**
  * @brief Implements an SSL secured TCP socket.

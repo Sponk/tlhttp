@@ -1,5 +1,5 @@
 // TinyLittleHTTP
-// Copyright (c) Yannick Pflanzer 2017, All rights reserved.
+// Copyright (c) 2017-2018 Yannick Pflanzer, All rights reserved.
 // 
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -126,8 +126,8 @@ Request Connection::get()
 	if(!m_socketFd)
 		throw std::runtime_error("Not connected!");
 
-	char buffer[512];
-	buffer[511] = 0;
+	char buffer[4096];
+	buffer[4096] = 0;
 
 	int err = 0;
 	Request req;
@@ -139,7 +139,11 @@ Request Connection::get()
 	req = Request::parse(std::string(buffer, err));
 
 	// Calculate remaining size
-	size_t bytecount = std::stoll(req["Content-Length"]) - req.getBody().str().size();
+	std::string contentSize = req["Content-Length"];
+	if(contentSize.empty())
+		return req;
+	
+	size_t bytecount = std::stoll(contentSize) - req.getBody().str().size();
 	while((err = ::recv(m_socketFd, buffer, sizeof(buffer) - 1, 0)) > 0 && bytecount > 0)
 	{
 		bytecount -= err;
