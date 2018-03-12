@@ -17,6 +17,7 @@
 #ifndef TLHTTP_SERVER_H
 #define TLHTTP_SERVER_H
 
+#include <memory>
 #include <functional>
 #include "Connection.h"
 
@@ -43,7 +44,7 @@ public:
 			close(m_socketFd);
 	}
 
-	void start(const std::function<bool(Connection&)>& requestHandler);
+	void start(const std::function<bool(const std::shared_ptr<Connection>&)>& requestHandler);
 	void stop();
 };
 }

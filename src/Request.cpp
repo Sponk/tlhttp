@@ -34,14 +34,14 @@ std::string Request::toString() const
 	if(m_response == 0)
 		ss << (m_isPostRequest ? "POST " : "GET ") << m_url << " HTTP/1.1" << "\r\n";
 	else
-		ss << "HTTP/1.1 " << m_response << "OK\r\n";
+		ss << "HTTP/1.1 " << m_response << " OK\r\n";
 	
 	for (auto k : m_headers)
 	{
 		ss << k.first << ": " << k.second << "\r\n";
 	}
 
-	if(m_isPostRequest)
+	if(m_isPostRequest || m_response != 0)
 	{
 		if (!m_body.str().empty())
 		{

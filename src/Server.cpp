@@ -20,7 +20,7 @@
 
 using namespace tlhttp;
 
-void Server::start(const std::function<bool(Connection&)>& requestHandler)
+void Server::start(const std::function<bool(const std::shared_ptr<Connection>&)>& requestHandler)
 {
 	if(m_running)
 		throw std::runtime_error("Server is already running on one thread!");
@@ -50,7 +50,7 @@ void Server::start(const std::function<bool(Connection&)>& requestHandler)
 		if(fd == -1)
 			throw std::runtime_error(std::string("Could not create socket to client: ") + gai_strerror(fd));
 
-		tlhttp::Connection conn(fd);
+		auto conn = std::shared_ptr<Connection>(new Connection(fd));
 		if(!requestHandler(conn))
 		{
 			throw std::runtime_error("Request handler failed!");

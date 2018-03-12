@@ -1,5 +1,5 @@
 // TinyLittleHTTP
-// Copyright (c) 2017 Yannick Pflanzer, All rights reserved.
+// Copyright (c) 2017-2018 Yannick Pflanzer, All rights reserved.
 // 
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -37,14 +37,14 @@ TEST(test, sslTest)
 	const tlhttp::Request result = connection.get("/index.html", "");
 	std::cout << result.toString() << std::endl;
 	EXPECT_FALSE(result.getBody().str().empty());
-}*/
+}
 
-/*TEST(test, connect)
+TEST(test, connect)
 {
 	tlhttp::Server server("0.0.0.0", 8080);
-	server.start([](tlhttp::Connection& connection) {
+	server.start([](const std::shared_ptr<tlhttp::Connection>& connection) {
 
-		connection.send("Hello World!\n");
+		connection.send(std::string("Hello World: ") + connection->get().toString() + "\n");
 		return true;
 	});
 }*/
