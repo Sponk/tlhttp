@@ -127,7 +127,7 @@ Request Connection::get()
 		throw std::runtime_error("Not connected!");
 
 	char buffer[4096];
-	buffer[4096] = 0;
+	buffer[4095] = 0;
 
 	int err = 0;
 	Request req;
